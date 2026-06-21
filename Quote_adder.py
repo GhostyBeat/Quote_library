@@ -13,9 +13,11 @@ def history_window():
     try:
         with open('Quotes history.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
-            for hi in history: history_text += hi + '\n'
+            if history:
+                for hi in history: history_text += hi + '\n'
+            else: history_text = 'История отсутствует'
     except FileNotFoundError: history_text = 'История отсутствует.'
-    except json.decoder.JSONDecodeError: history_text = 'История отсутствует.'
+    except json.decoder.JSONDecodeError: history_text = 'Файл истории поврежден'
 
     history_window = tk.Tk()
     history_window.geometry('600x300')
@@ -46,8 +48,8 @@ def add_quote():
             with open('Quotes list.json', 'w', encoding='utf-8') as file:
                 json.dump(quotes, file, indent=4, sort_keys=True, ensure_ascii=False)
             res_label['text'] = 'Добавлено'
-        except FileNotFoundError: ''
-        except json.decoder.JSONDecodeError: ''
+        except FileNotFoundError: res_label['text'] = 'Уже сказано, что файла с цитатами нет'
+        except json.decoder.JSONDecodeError: res_label['text'] = 'Сказал же: файл с цитатами поврежден'
     else: res_label['text'] = 'Не все поля заполнены'
 
 
